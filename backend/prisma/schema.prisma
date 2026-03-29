@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+//La conexión de la base de datos se hace desde prisma.config.ts
+datasource db {
+  provider = "mysql"
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  nombre String @unique @db.VarChar(100)
+  descripcion String? @db.VarChar(255)
+  usuarios Usuario[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+model Usuario {
+  id Int @id @default(autoincrement())
+  nombre String @db.VarChar(100)
+  correo String @unique @db.VarChar(100)
+  telefono String @db.VarChar(20)
+  password String @db.VarChar(255)
+  departamento String? @db.VarChar(100)
+  municipio String? @db.VarChar(100)
+  rolId Int @map("rol_id")
+  rol Role @relation(fields: [rolId], references: [id])
+  pedidos Pedido[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("usuarios")
+}
+
+model Categoria {
+  id Int @id @default(autoincrement())
+  nombre String @db.VarChar(100)
+  descripcion String @db.VarChar(255)
+  productos Producto[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categorias")
+}
+
+model Producto {
+  id Int @id @default(autoincrement())
+  nombre String @db.VarChar(100)
+  categoriaId Int
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+  descripcion String @db.VarChar(255)
+  precio Decimal @default(0.00)
+  stock Int
+  imagen String @db.VarChar(255)
+  ordenItems OrdenItem[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("productos")
+}
+
+model Pedido {
+  id Int @id @default(autoincrement())
+  usuarioId Int
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  total Decimal @default(0.00)
+  estado String @db.VarChar(50)
+  stripeSessionId String? @db.VarChar(255)
+  ordenItems OrdenItem[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("pedidos")
+}
+
+model OrdenItem {
+  id Int @id @default(autoincrement())
+  pedidoId Int
+  pedido Pedido @relation(fields: [pedidoId], references: [id])
+  productoId Int
+  producto Producto @relation(fields: [productoId], references: [id])
+  cantidad Int
+  precioUnitario Decimal @default(0.00)
+  fecha DateTime @default(now()) @map("created_at")
+
+  @@map("orden_items")
+}

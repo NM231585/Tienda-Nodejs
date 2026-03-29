@@ -1,3 +1,16 @@
 node_modules
 .env
-data
+*.log
+.DS_Store
+dist
+build
+coverage
+.vscode
+.idea
+
+# Prisma
+prisma/migrations/
+/src/generated/prisma
+# Uploads
+uploads/
+!uploads/.gitkeep
