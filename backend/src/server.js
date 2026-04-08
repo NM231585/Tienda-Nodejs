@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { prisma } from './config/db.js';
 import path from 'path';
+import authRoutes from './routes/Auth.routes.js';
 import productRoutes from './routes/Product.routes.js';
 import categoryRoutes from './routes/Category.routes.js';
 
@@ -42,3 +43,4 @@ app.use("/uploads", express.static(path.resolve("uploads")));
 //Importar rutas
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/auth", authRoutes);
