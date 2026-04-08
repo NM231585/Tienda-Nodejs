@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { prisma } from './config/db.js';
+import productRoutes from './routes/Product.routes.js';
+import categoryRoutes from './routes/Category.routes.js';
 
 const app = express();
 
@@ -32,3 +34,7 @@ const startServer = async () => {
 }
 
 startServer();
+
+//Importar rutas
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
