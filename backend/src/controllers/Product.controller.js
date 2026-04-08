@@ -28,13 +28,14 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         const { name, id_category, description, price, stock} = req.body;
+        const image = req.file ? `/uploads/${req.file.filename}` : "";
         const product = await prisma.producto.create({
             data: { nombre: name,
                 categoriaId: parseInt(id_category),
                 descripcion: description,
                 precio:parseFloat(price),
                 stock:parseInt(stock),
-                imagen: "" }
+                imagen: image }
         });
         res.status(201).json({ message: "Producto creado exitosamente", newProduct: product });
     } catch (error) {

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { prisma } from './config/db.js';
+import path from 'path';
 import productRoutes from './routes/Product.routes.js';
 import categoryRoutes from './routes/Category.routes.js';
 
@@ -34,6 +35,9 @@ const startServer = async () => {
 }
 
 startServer();
+
+//Volver pública la carpeta uploads
+app.use("/uploads", express.static(path.resolve("uploads")));
 
 //Importar rutas
 app.use("/api/products", productRoutes);
