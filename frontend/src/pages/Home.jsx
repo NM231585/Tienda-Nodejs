@@ -1,6 +1,7 @@
 import Layout from '../components/Layout.tsx';
 import ProductCard from '../components/ProductCard.tsx';
 import { motion } from 'framer-motion';
+import { useAppStore } from '../store/useAppStore';
 
 // Mock data for Phase 1 (UI/UX)
 const MOCK_PRODUCTS = [
@@ -15,10 +16,19 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function Home() {
+  const { searchQuery } = useAppStore();
+
+  const filteredProducts = MOCK_PRODUCTS.filter(product => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query);
+  });
+
   return (
     <Layout>
       {/* Hero Section / Offers Banner */}
-      <motion.section 
+      {!searchQuery && (
+        <motion.section 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -39,6 +49,7 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-white opacity-5 transform skew-x-12 translate-x-20"></div>
         <div className="absolute bottom-0 right-20 w-64 h-64 bg-[var(--color-primary)] rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
       </motion.section>
+      )}
 
       {/* Main Content Area */}
       <section>
@@ -53,7 +64,7 @@ export default function Home() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {MOCK_PRODUCTS.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, scale: 0.95 }}
